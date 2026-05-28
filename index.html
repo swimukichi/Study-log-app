@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>学習ログ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f2;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #646a73;
+      --line: #dde1d8;
+      --primary: #256f5c;
+      --primary-dark: #1d5849;
+      --accent: #9c5a1c;
+      --danger: #b43737;
+      --shadow: 0 10px 28px rgba(30, 38, 34, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .app {
+      width: min(100%, 720px);
+      margin: 0 auto;
+      padding: 20px 14px 34px;
+    }
+
+    header {
+      padding: 8px 2px 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel,
+    .log-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 16px;
+    }
+
+    .today-plan {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 14px;
+      border: 1px solid #ead8bf;
+      border-radius: 8px;
+      background: #fff8ed;
+    }
+
+    .today-plan h2 {
+      font-size: 18px;
+    }
+
+    .plan-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .plan-subjects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .plan-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #ead8bf;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .study-menu {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f9faf6;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .menu-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcf8;
+    }
+
+    .menu-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .menu-title {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .menu-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .menu-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .menu-list li {
+      margin: 4px 0;
+    }
+
+    .menu-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 10px;
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: 1fr 96px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .weekday-box {
+      display: grid;
+      align-items: center;
+      min-height: 49px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f9faf6;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .primary:active {
+      background: var(--primary-dark);
+    }
+
+    .secondary {
+      background: #e7ebe4;
+      color: var(--text);
+    }
+
+    .danger {
+      background: #f4e2e2;
+      color: var(--danger);
+    }
+
+    .list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 24px 2px 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+
+    .filter-button {
+      min-height: 40px;
+      background: #e7ebe4;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .filter-button.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .logs {
+      display: grid;
+      gap: 16px;
+    }
+
+    .day-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .day-heading {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 4px 6px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .day-heading strong {
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .log-card {
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(30, 38, 34, 0.07);
+    }
+
+    .log-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .log-main {
+      min-width: 0;
+    }
+
+    .log-title {
+      margin: 7px 0 0;
+      font-size: 16px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .subject {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #edf4df;
+      color: #3b5f19;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .minutes {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef0f4;
+      color: #39404a;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .log-body {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+
+    .item {
+      display: grid;
+      gap: 3px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #f9faf6;
+    }
+
+    .item strong {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .item span {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .item.highlight {
+      background: #fff8ed;
+      border: 1px solid #ead8bf;
+    }
+
+    .item.good {
+      background: #eef7f1;
+      border: 1px solid #d8eadf;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 22px 14px;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 420px);
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #202124;
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        padding-top: 14px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .row,
+      .date-row,
+      .actions,
+      .menu-actions,
+      .card-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>学習ログ</h1>
+      <p class="lead">簿記・中国語繁体字・英語の記録をこのブラウザに保存します。</p>
+    </header>
+
+    <section class="panel" aria-label="学習ログ入力">
+      <div class="today-plan">
+        <h2 id="planTitle">今日の予定</h2>
+        <p class="plan-text">簿記は毎日、語学は1日ごとに交互に進めます。</p>
+        <div class="plan-subjects" id="planSubjects"></div>
+      </div>
+
+      <div class="study-menu" id="studyMenu" aria-label="今日の学習メニュー"></div>
+
+      <form id="logForm">
+        <div class="date-row">
+          <label>
+            学習日
+            <input id="studyDate" type="date" required>
+          </label>
+          <div class="weekday-box" id="weekdayView">-</div>
+        </div>
+
+        <div class="row">
+          <label>
+            科目
+            <select id="subject" required>
+              <option value="簿記">簿記</option>
+              <option value="中国語繁体字">中国語繁体字</option>
+              <option value="英語">英語</option>
+            </select>
+          </label>
+
+          <label>
+            学習時間
+            <input id="minutes" type="number" inputmode="numeric" min="1" step="1" placeholder="30" required>
+          </label>
+        </div>
+
+        <label>
+          今日の学習内容
+          <textarea id="content" placeholder="例：仕訳問題を10問解いた" required></textarea>
+        </label>
+
+        <label>
+          間違えたこと
+          <textarea id="mistakes" placeholder="例：売掛金と未収入金を混同した"></textarea>
+        </label>
+
+        <label>
+          できたこと・気づき
+          <textarea id="wins" placeholder="例：借方と貸方を前より迷わず書けた"></textarea>
+        </label>
+
+        <label>
+          明日やること
+          <textarea id="next" placeholder="例：同じ範囲をもう一度復習する"></textarea>
+        </label>
+
+        <div class="actions">
+          <button class="primary" type="submit">保存</button>
+          <button class="secondary" type="button" id="clearForm">入力を消す</button>
+        </div>
+      </form>
+    </section>
+
+    <section aria-label="学習ログ一覧">
+      <div class="list-head">
+        <h2>ログ一覧</h2>
+        <span class="count" id="count">0件</span>
+      </div>
+      <div class="stats" id="stats" aria-label="学習の実績"></div>
+      <div class="filters" id="weekdayFilters" aria-label="曜日で絞り込み"></div>
+      <div class="logs" id="logs"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "local-study-log-v1";
+    const form = document.querySelector("#logForm");
+    const studyDateInput = document.querySelector("#studyDate");
+    const subjectInput = document.querySelector("#subject");
+    const weekdayView = document.querySelector("#weekdayView");
+    const planTitle = document.querySelector("#planTitle");
+    const planSubjects = document.querySelector("#planSubjects");
+    const studyMenu = document.querySelector("#studyMenu");
+    const weekdayFilters = document.querySelector("#weekdayFilters");
+    const statsEl = document.querySelector("#stats");
+    const logsEl = document.querySelector("#logs");
+    const countEl = document.querySelector("#count");
+    const toastEl = document.querySelector("#toast");
+    const clearFormButton = document.querySelector("#clearForm");
+    const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+    const languageByWeekday = {
+      0: "中国語繁体字",
+      1: "中国語繁体字",
+      2: "英語",
+      3: "中国語繁体字",
+      4: "英語",
+      5: "中国語繁体字",
+      6: "英語"
+    };
+    const bookkeepingLessons = [
+      {
+        title: "仕訳の型：増えたもの・減ったもの",
+        steps: [
+          "取引を読んで、増えたもの・減ったものを先に書き出す",
+          "資産・負債・純資産・収益・費用のどれかに分ける",
+          "借方と貸方に置いて、左右の金額が同じか確認する"
+        ],
+        next: "取引を読んで、増えたもの・減ったものを先に書く練習をする"
+      },
+      {
+        title: "現金・普通預金の仕訳",
+        steps: [
+          "現金が増えると借方、減ると貸方に置くことを確認する",
+          "普通預金も資産なので、増減の考え方は現金と同じだと確認する",
+          "入金・出金・預け入れの仕訳を5問解く"
+        ],
+        next: "現金と普通預金の増減をもう一度仕訳する"
+      },
+      {
+        title: "売上・仕入と掛け取引",
+        steps: [
+          "売上は収益、仕入は費用として考える",
+          "あとでお金をもらうなら売掛金、あとで払うなら買掛金にする",
+          "現金取引と掛け取引を混ぜて5問解く"
+        ],
+        next: "売掛金と買掛金を間違えないように復習する"
+      },
+      {
+        title: "売掛金・未収入金の違い",
+        steps: [
+          "本業の商品やサービスの売上なら売掛金にする",
+          "本業以外のものを売って、あとでお金をもらうなら未収入金にする",
+          "売掛金と未収入金が出る例を2つずつ書く"
+        ],
+        next: "売掛金と未収入金の違いを例で復習する"
+      },
+      {
+        title: "買掛金・未払金の違い",
+        steps: [
+          "商品を仕入れて、あとで払うなら買掛金にする",
+          "商品以外のものを買って、あとで払うなら未払金にする",
+          "買掛金と未払金が出る例を2つずつ書く"
+        ],
+        next: "買掛金と未払金の違いを例で復習する"
+      },
+      {
+        title: "前払金・前受金",
+        steps: [
+          "先にお金を払ったら前払金、先にお金を受け取ったら前受金と考える",
+          "商品を受け取った時、または商品を渡した時にどう消えるか確認する",
+          "前払金と前受金の仕訳を3問ずつ解く"
+        ],
+        next: "前払金と前受金がいつ消えるか復習する"
+      },
+      {
+        title: "貸付金・借入金",
+        steps: [
+          "お金を貸したら貸付金、お金を借りたら借入金にする",
+          "利息を受け取る・支払う仕訳も一緒に確認する",
+          "貸した側、借りた側の仕訳をそれぞれ書く"
+        ],
+        next: "貸付金と借入金を立場で分けて復習する"
+      },
+      {
+        title: "仮払金・仮受金",
+        steps: [
+          "内容がまだ分からない支払いは仮払金にする",
+          "内容がまだ分からない入金は仮受金にする",
+          "内容が分かった時に正しい勘定科目へ振り替える練習をする"
+        ],
+        next: "仮払金・仮受金の振り替えを復習する"
+      }
+    ];
+    const languageLessons = {
+      "中国語繁体字": [
+        {
+          title: "自己紹介を話す",
+          steps: [
+            "名前、住んでいる場所、勉強している理由を繁体字で短く書く",
+            "書いた文を見ながら3回声に出す",
+            "見ないで10秒だけ話して録音する"
+          ],
+          next: "自己紹介を見ないで言えるようにする"
+        },
+        {
+          title: "今日したことを話す",
+          steps: [
+            "今日したことを3文で書く",
+            "每・今天・學習 など使いたい語を1つ決める",
+            "ゆっくりでいいので30秒話す"
+          ],
+          next: "今日したことを30秒話す練習をもう一度やる"
+        },
+        {
+          title: "好きなものを話す",
+          steps: [
+            "好きな台湾文化を1つ選ぶ",
+            "なぜ好きかを1文で書く",
+            "その内容を20秒話す"
+          ],
+          next: "好きな台湾文化についてもう一度話す"
+        }
+      ],
+      "英語": [
+        {
+          title: "自己紹介を話す",
+          steps: [
+            "名前、住んでいる場所、勉強している理由を英語で短く書く",
+            "書いた文を見ながら3回声に出す",
+            "見ないで10秒だけ話して録音する"
+          ],
+          next: "自己紹介を見ないで言えるようにする"
+        },
+        {
+          title: "今日したことを話す",
+          steps: [
+            "今日したことを3文で書く",
+            "I studied / I practiced / I made a mistake を使う",
+            "ゆっくりでいいので30秒話す"
+          ],
+          next: "今日したことを30秒話す練習をもう一度やる"
+        },
+        {
+          title: "意見を一言で話す",
+          steps: [
+            "I think で始まる文を1つ作る",
+            "理由を because で1つ足す",
+            "同じ内容を3回、少しずつ自然に話す"
+          ],
+          next: "I think と because を使ってもう一度話す"
+        }
+      ]
+    };
+
+    let logs = loadLogs();
+    let activeWeekday = "all";
+
+    function loadLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLogs() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 1800);
+    }
+
+    function todayValue() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function dateFromValue(value) {
+      return new Date(`${value}T00:00:00`);
+    }
+
+    function getLogDate(log) {
+      return log.studyDate || log.createdAt.slice(0, 10);
+    }
+
+    function getWeekdayIndex(value) {
+      return dateFromValue(value).getDay();
+    }
+
+    function getWeekdayLabel(value) {
+      return `${weekdays[getWeekdayIndex(value)]}曜日`;
+    }
+
+    function getPlanSubjects(value) {
+      const language = languageByWeekday[getWeekdayIndex(value)];
+      return ["簿記", language];
+    }
+
+    function addDays(value, amount) {
+      const date = dateFromValue(value);
+      date.setDate(date.getDate() + amount);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function getLogsByDate(value) {
+      return logs.filter((log) => getLogDate(log) === value);
+    }
+
+    function getSubjectCount(subject, beforeDate) {
+      return logs.filter((log) => {
+        return log.subject === subject && getLogDate(log) < beforeDate;
+      }).length;
+    }
+
+    function getLesson(subject, dateValue) {
+      if (subject === "簿記") {
+        return bookkeepingLessons[getSubjectCount(subject, dateValue) % bookkeepingLessons.length];
+      }
+
+      const lessons = languageLessons[subject];
+      return lessons[getSubjectCount(subject, dateValue) % lessons.length];
+    }
+
+    function createId() {
+      if (crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+
+      return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function updatePlan() {
+      const dateValue = studyDateInput.value;
+      const weekdayLabel = getWeekdayLabel(dateValue);
+      const subjects = getPlanSubjects(dateValue);
+
+      weekdayView.textContent = weekdayLabel;
+      planTitle.textContent = `${weekdayLabel}の予定`;
+      planSubjects.innerHTML = subjects
+        .map((subject) => `<span class="plan-chip">${escapeHtml(subject)}</span>`)
+        .join("");
+      subjectInput.value = subjects[0];
+      renderStudyMenu();
+    }
+
+    function formatDate(value) {
+      return new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function logToText(log) {
+      const date = getLogDate(log);
+      return [
+        `【${log.subject}】${date} ${getWeekdayLabel(date)}`,
+        `学習時間：${log.minutes}分`,
+        `今日の学習内容：${log.content}`,
+        `間違えたこと：${log.mistakes || "なし"}`,
+        `できたこと・気づき：${log.wins || "未記入"}`,
+        `明日やること：${log.next || "未定"}`
+      ].join("\n");
+    }
+
+    function menuToText(subject, lesson) {
+      return [
+        `【${subject}】${lesson.title}`,
+        "今日やること：",
+        ...lesson.steps.map((step, index) => `${index + 1}. ${step}`),
+        `明日やること：${lesson.next}`
+      ].join("\n");
+    }
+
+    function renderStudyMenu() {
+      const dateValue = studyDateInput.value;
+      const previousDate = addDays(dateValue, -1);
+      const previousLogs = getLogsByDate(previousDate);
+      const subjects = getPlanSubjects(dateValue);
+      const reviewHtml = previousLogs.length
+        ? `
+          <div class="menu-card">
+            <div class="menu-top">
+              <div>
+                <h3 class="menu-title">前日の復習</h3>
+                <p class="menu-note">${escapeHtml(previousDate)} のログから復習します。</p>
+              </div>
+              <span class="subject">復習</span>
+            </div>
+            <ul class="menu-list">
+              ${previousLogs.map((log) => `
+                <li>${escapeHtml(log.subject)}：${escapeHtml(log.mistakes || log.next || log.content)}</li>
+              `).join("")}
+            </ul>
+          </div>
+        `
+        : `
+          <div class="menu-card">
+            <div class="menu-top">
+              <div>
+                <h3 class="menu-title">前日の復習</h3>
+                <p class="menu-note">前日のログがないので、今日は基礎メニューから始めます。</p>
+              </div>
+              <span class="subject">復習</span>
+            </div>
+          </div>
+        `;
+
+      const lessonHtml = subjects.map((subject) => {
+        const lesson = getLesson(subject, dateValue);
+        return `
+          <div class="menu-card">
+            <div class="menu-top">
+              <div>
+                <h3 class="menu-title">${escapeHtml(lesson.title)}</h3>
+                <p class="menu-note">${subject === "簿記" ? "基礎から順番に進めます。" : "話せるようになることを最優先にします。"}</p>
+              </div>
+              <span class="subject">${escapeHtml(subject)}</span>
+            </div>
+            <ul class="menu-list">
+              ${lesson.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}
+            </ul>
+            <div class="menu-actions">
+              <button class="secondary" type="button" data-use-menu="${escapeHtml(subject)}">入力欄に入れる</button>
+              <button class="secondary" type="button" data-copy-menu="${escapeHtml(subject)}">コピー</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      studyMenu.innerHTML = reviewHtml + lessonHtml;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("コピーしました");
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        showToast("コピーしました");
+      }
+    }
+
+    function renderFilters() {
+      const filters = [{ value: "all", label: "全部" }].concat(
+        weekdays.map((day, index) => ({ value: String(index), label: day }))
+      );
+
+      weekdayFilters.innerHTML = filters.map((filter) => `
+        <button
+          class="filter-button ${activeWeekday === filter.value ? "active" : ""}"
+          type="button"
+          data-weekday="${filter.value}"
+        >${escapeHtml(filter.label)}</button>
+      `).join("");
+    }
+
+    function renderStats() {
+      const totalMinutes = logs.reduce((sum, log) => sum + Number(log.minutes || 0), 0);
+      const bookkeepingCount = logs.filter((log) => log.subject === "簿記").length;
+      const mistakeCount = logs.filter((log) => log.mistakes && log.mistakes.trim()).length;
+
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <strong>${escapeHtml(logs.length)}</strong>
+          <span>保存したログ</span>
+        </div>
+        <div class="stat-card">
+          <strong>${escapeHtml(totalMinutes)}</strong>
+          <span>合計分数</span>
+        </div>
+        <div class="stat-card">
+          <strong>${escapeHtml(bookkeepingCount)}</strong>
+          <span>簿記ログ</span>
+        </div>
+        <div class="stat-card">
+          <strong>${escapeHtml(mistakeCount)}</strong>
+          <span>復習の種</span>
+        </div>
+      `;
+    }
+
+    function getShortTitle(log) {
+      const firstLine = (log.content || "").split("\n").find((line) => line.trim());
+      return firstLine || "学習ログ";
+    }
+
+    function groupLogsByDate(items) {
+      return items.reduce((groups, log) => {
+        const date = getLogDate(log);
+        if (!groups[date]) {
+          groups[date] = [];
+        }
+        groups[date].push(log);
+        return groups;
+      }, {});
+    }
+
+    function renderLogs() {
+      renderStats();
+
+      const visibleLogs = activeWeekday === "all"
+        ? logs
+        : logs.filter((log) => String(getWeekdayIndex(getLogDate(log))) === activeWeekday);
+
+      countEl.textContent = `${visibleLogs.length}件`;
+
+      if (visibleLogs.length === 0) {
+        logsEl.innerHTML = '<div class="empty">まだログはありません</div>';
+        return;
+      }
+
+      const groups = groupLogsByDate(visibleLogs);
+      logsEl.innerHTML = Object.entries(groups).map(([date, items]) => `
+        <div class="day-group">
+          <div class="day-heading">
+            <strong>${escapeHtml(date)} ${escapeHtml(getWeekdayLabel(date))}</strong>
+            <span>${escapeHtml(items.length)}件</span>
+          </div>
+          ${items.map((log) => `
+            <article class="log-card">
+              <div class="log-top">
+                <div class="log-main">
+                  <span class="subject">${escapeHtml(log.subject)}</span>
+                  <div class="log-title">${escapeHtml(getShortTitle(log))}</div>
+                </div>
+                <span class="minutes">${escapeHtml(log.minutes)}分</span>
+              </div>
+              <div class="log-body">
+                <div class="item">
+                  <strong>内容</strong>
+                  <span>${escapeHtml(log.content)}</span>
+                </div>
+                <div class="item highlight">
+                  <strong>間違えたこと</strong>
+                  <span>${escapeHtml(log.mistakes || "なし")}</span>
+                </div>
+                <div class="item good">
+                  <strong>できたこと・気づき</strong>
+                  <span>${escapeHtml(log.wins || "未記入")}</span>
+                </div>
+                <div class="item">
+                  <strong>明日やること</strong>
+                  <span>${escapeHtml(log.next || "未定")}</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="secondary" type="button" data-copy="${log.id}">コピー</button>
+                <button class="danger" type="button" data-delete="${log.id}">削除</button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `).join("");
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const log = {
+        id: createId(),
+        studyDate: studyDateInput.value,
+        subject: subjectInput.value,
+        minutes: document.querySelector("#minutes").value,
+        content: document.querySelector("#content").value.trim(),
+        mistakes: document.querySelector("#mistakes").value.trim(),
+        wins: document.querySelector("#wins").value.trim(),
+        next: document.querySelector("#next").value.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      logs.unshift(log);
+      saveLogs();
+      renderStudyMenu();
+      renderLogs();
+      form.reset();
+      studyDateInput.value = todayValue();
+      updatePlan();
+      showToast("保存しました");
+    });
+
+    clearFormButton.addEventListener("click", () => {
+      form.reset();
+      studyDateInput.value = todayValue();
+      updatePlan();
+    });
+
+    studyDateInput.addEventListener("change", updatePlan);
+
+    studyMenu.addEventListener("click", (event) => {
+      const useSubject = event.target.dataset.useMenu;
+      const copySubject = event.target.dataset.copyMenu;
+      const subject = useSubject || copySubject;
+      if (!subject) return;
+
+      const lesson = getLesson(subject, studyDateInput.value);
+      if (copySubject) {
+        copyText(menuToText(subject, lesson));
+        return;
+      }
+
+      subjectInput.value = subject;
+      document.querySelector("#content").value = [
+        lesson.title,
+        ...lesson.steps.map((step) => `・${step}`)
+      ].join("\n");
+      document.querySelector("#next").value = lesson.next;
+      document.querySelector("#wins").value = subject === "簿記"
+        ? "仕訳で迷った点を1つ言葉にできた"
+        : "声に出して練習できた";
+      showToast("入力欄に入れました");
+    });
+
+    weekdayFilters.addEventListener("click", (event) => {
+      const weekday = event.target.dataset.weekday;
+      if (!weekday) return;
+
+      activeWeekday = weekday;
+      renderFilters();
+      renderLogs();
+    });
+
+    logsEl.addEventListener("click", (event) => {
+      const copyId = event.target.dataset.copy;
+      const deleteId = event.target.dataset.delete;
+
+      if (copyId) {
+        const log = logs.find((item) => item.id === copyId);
+        if (log) copyText(logToText(log));
+      }
+
+      if (deleteId) {
+        logs = logs.filter((item) => item.id !== deleteId);
+        saveLogs();
+        renderLogs();
+        showToast("削除しました");
+      }
+    });
+
+    studyDateInput.value = todayValue();
+    updatePlan();
+    renderFilters();
+    renderLogs();
+  </script>
+</body>
+</html>
