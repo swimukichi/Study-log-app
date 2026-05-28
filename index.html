@@ -309,6 +309,34 @@
       color: #fff;
     }
 
+    .data-tools {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .data-tools-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .data-tools-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .data-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
     .logs {
       display: grid;
       gap: 16px;
@@ -476,6 +504,7 @@
       .row,
       .date-row,
       .actions,
+      .data-actions,
       .menu-actions,
       .card-actions {
         grid-template-columns: 1fr;
@@ -565,6 +594,15 @@
         <span class="count" id="count">0件</span>
       </div>
       <div class="stats" id="stats" aria-label="学習の実績"></div>
+      <div class="data-tools" aria-label="ログの移動">
+        <p class="data-tools-title">ログの移動</p>
+        <p class="data-tools-note">スマホとMacの間でログを移すときに使います。</p>
+        <div class="data-actions">
+          <button class="secondary" type="button" id="exportLogs">エクスポート</button>
+          <button class="secondary" type="button" id="importLogs">インポート</button>
+        </div>
+        <input id="importFile" type="file" accept="application/json,.json" hidden>
+      </div>
       <div class="filters" id="weekdayFilters" aria-label="曜日で絞り込み"></div>
       <div class="logs" id="logs"></div>
     </section>
@@ -587,6 +625,9 @@
     const countEl = document.querySelector("#count");
     const toastEl = document.querySelector("#toast");
     const clearFormButton = document.querySelector("#clearForm");
+    const exportLogsButton = document.querySelector("#exportLogs");
+    const importLogsButton = document.querySelector("#importLogs");
+    const importFileInput = document.querySelector("#importFile");
     const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
     const languageByWeekday = {
       0: "中国語繁体字",
@@ -747,6 +788,15 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     }
 
+    function isValidLog(log) {
+      return log
+        && typeof log === "object"
+        && typeof log.id === "string"
+        && typeof log.subject === "string"
+        && typeof log.studyDate === "string"
+        && typeof log.content === "string";
+    }
+
     function showToast(message) {
       toastEl.textContent = message;
       toastEl.classList.add("show");
@@ -870,6 +920,57 @@
         ...lesson.steps.map((step, index) => `${index + 1}. ${step}`),
         `明日やること：${lesson.next}`
       ].join("\n");
+    }
+
+    function exportLogs() {
+      const data = {
+        app: "study-log-app",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        logs
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `study-log-${todayValue()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast("ログを書き出しました");
+    }
+
+    function importLogData(data) {
+      const importedLogs = Array.isArray(data) ? data : data.logs;
+      if (!Array.isArray(importedLogs)) {
+        showToast("読み込めるログがありません");
+        return;
+      }
+
+      const existingIds = new Set(logs.map((log) => log.id));
+      const newLogs = importedLogs
+        .filter(isValidLog)
+        .filter((log) => !existingIds.has(log.id));
+
+      if (newLogs.length === 0) {
+        showToast("追加できる新しいログはありません");
+        return;
+      }
+
+      logs = logs
+        .concat(newLogs)
+        .sort((a, b) => {
+          const dateA = `${getLogDate(a)} ${a.createdAt || ""}`;
+          const dateB = `${getLogDate(b)} ${b.createdAt || ""}`;
+          return dateB.localeCompare(dateA);
+        });
+      saveLogs();
+      renderStudyMenu();
+      renderLogs();
+      showToast(`${newLogs.length}件読み込みました`);
     }
 
     function renderStudyMenu() {
@@ -1088,6 +1189,29 @@
       form.reset();
       studyDateInput.value = todayValue();
       updatePlan();
+    });
+
+    exportLogsButton.addEventListener("click", exportLogs);
+
+    importLogsButton.addEventListener("click", () => {
+      importFileInput.click();
+    });
+
+    importFileInput.addEventListener("change", () => {
+      const file = importFileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        try {
+          importLogData(JSON.parse(reader.result));
+        } catch {
+          showToast("ファイルを読み込めませんでした");
+        } finally {
+          importFileInput.value = "";
+        }
+      });
+      reader.readAsText(file);
     });
 
     studyDateInput.addEventListener("change", updatePlan);
