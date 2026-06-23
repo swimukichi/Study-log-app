@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seedance 2.0 資料まとめ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f6f2;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #626973;
+      --line: #dde1d8;
+      --green: #256f5c;
+      --orange: #9c5a1c;
+      --blue: #285f8f;
+      --red: #a33b3b;
+      --shadow: 0 10px 26px rgba(28, 34, 31, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+    }
+
+    .app {
+      width: min(100%, 860px);
+      margin: 0 auto;
+      padding: 18px 14px 44px;
+    }
+
+    header {
+      padding: 12px 2px 18px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+      line-height: 1.25;
+    }
+
+    .lead {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .hero,
+    .section,
+    .mini-card,
+    .prompt-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-color: #ead8bf;
+      background: #fff8ed;
+    }
+
+    .hero strong {
+      color: var(--orange);
+    }
+
+    .quick-nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 0 0 14px;
+    }
+
+    .quick-nav a {
+      min-height: 42px;
+      display: grid;
+      align-items: center;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .section {
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+
+    h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    ul,
+    ol {
+      margin: 8px 0 0;
+      padding-left: 22px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .mini-card {
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .mini-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 0 6px 6px 0;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #edf4df;
+      color: #3b5f19;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag.orange {
+      background: #fff0db;
+      color: var(--orange);
+    }
+
+    .tag.blue {
+      background: #e8f1f8;
+      color: var(--blue);
+    }
+
+    .tag.red {
+      background: #f8e8e8;
+      color: var(--red);
+    }
+
+    .prompt-box {
+      margin-top: 10px;
+      padding: 12px;
+      background: #fbfcf8;
+      box-shadow: none;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .warning {
+      border-color: #ead8bf;
+      background: #fff8ed;
+    }
+
+    .danger {
+      border-color: #edcaca;
+      background: #fff4f4;
+    }
+
+    .source-list {
+      font-size: 13px;
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        padding-top: 12px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .quick-nav,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <a class="back-link" href="./index.html">← 学習ログに戻る</a>
+      <h1>Seedance 2.0 資料まとめ</h1>
+      <p class="lead">EmilyさんのGitHub資料を、動画生成の初心者でも使いやすいように整理したページです。</p>
+    </header>
+
+    <section class="hero">
+      <p><strong>結論：</strong>この資料は、Seedance 2.0で動画を作るための「プロンプトの書き方マニュアル」です。</p>
+      <p>動画生成ツール本体ではありません。Codexに読ませて、短い動画・連続動画・参照画像ありの動画を作るための指示文を整えるために使います。</p>
+    </section>
+
+    <nav class="quick-nav" aria-label="ページ内メニュー">
+      <a href="#what">これは何？</a>
+      <a href="#basic">基本ルール</a>
+      <a href="#references">参照素材</a>
+      <a href="#sequence">連続クリップ</a>
+      <a href="#template">プロンプト型</a>
+      <a href="#workflow">使う流れ</a>
+    </nav>
+
+    <section class="section" id="what">
+      <h2>1. これは何？</h2>
+      <p>Seedance 2.0で動画を作るとき、AIに何をどう伝えるかを整理するための資料です。</p>
+      <div class="grid">
+        <div class="mini-card">
+          <h3>できること</h3>
+          <p>動画の内容、カメラ、光、動き、音、参照画像の使い方を整理できます。</p>
+        </div>
+        <div class="mini-card">
+          <h3>できないこと</h3>
+          <p>これだけで動画が無料生成できるわけではありません。Seedance 2.0を使えるサービスや画面は別に必要です。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="basic">
+      <h2>2. 日本語プロンプトの基本</h2>
+      <p>一番大事なのは、ふわっとした言葉を使いすぎないことです。</p>
+      <div>
+        <span class="tag red">弱い書き方</span>
+        <span class="tag">映画みたいに</span>
+        <span class="tag">エモく</span>
+        <span class="tag">雰囲気よく</span>
+      </div>
+      <div>
+        <span class="tag blue">強い書き方</span>
+        <span class="tag">固定カメラ</span>
+        <span class="tag">柔らかい窓光</span>
+        <span class="tag">ゆっくり振り返る</span>
+        <span class="tag">静かな環境音</span>
+      </div>
+      <p>つまり、「いい感じにして」ではなく、何が画面に起きるのかを分けて書きます。</p>
+      <ol>
+        <li>誰・何を見せるか</li>
+        <li>何が動くか</li>
+        <li>カメラはどう動くか、または動かさないか</li>
+        <li>光はどこから来るか</li>
+        <li>音は必要か</li>
+        <li>変えてはいけないものは何か</li>
+      </ol>
+    </section>
+
+    <section class="section" id="references">
+      <h2>3. 画像・動画・音声を使うとき</h2>
+      <p><code>[Image1]</code>、<code>[Video1]</code>、<code>[Audio1]</code> のようなタグは翻訳せず、そのまま使います。</p>
+      <div class="grid">
+        <div class="mini-card">
+          <h3>画像</h3>
+          <p>人物の顔、商品の形、服装、背景、最初のフレーム、最後のフレームを固定するのに向いています。</p>
+        </div>
+        <div class="mini-card">
+          <h3>動画</h3>
+          <p>動き、カメラのリズム、歩き方、タイミングを参考にするのに向いています。</p>
+        </div>
+        <div class="mini-card">
+          <h3>音声</h3>
+          <p>テンポ、空気感、環境音、話し方の雰囲気を指定するのに向いています。</p>
+        </div>
+        <div class="mini-card">
+          <h3>注意</h3>
+          <p>1つの素材に何でもやらせないこと。素材ごとに役割を決めると安定します。</p>
+        </div>
+      </div>
+      <div class="prompt-box">
+        <pre>[Image1]は猫の見た目を固定する。
+[Video1]はカメラの動きだけを参考にする。
+[Audio1]はテンポだけを参考にする。
+服装、部屋、ロゴ、人物の見た目は[Video1]からコピーしない。</pre>
+      </div>
+    </section>
+
+    <section class="section" id="sequence">
+      <h2>4. 長い動画は1本で作らない</h2>
+      <p>資料の考え方では、長い物語は「複数の短いクリップ」に分けます。</p>
+      <p>理由は、1回の生成に詰め込みすぎると、途中で内容がずれたり、最後が思った通りにならなかったりするからです。</p>
+      <ol>
+        <li>まず全体のゴールを決める</li>
+        <li>Clip 01では1つの動きだけを見せる</li>
+        <li>生成された動画の最後を確認する</li>
+        <li>実際の終わり方に合わせてClip 02を書く</li>
+        <li>これを繰り返す</li>
+      </ol>
+      <div class="prompt-box warning">
+        <pre>大事：
+予定では「猫がクッションになった」はずでも、
+生成結果が「猫が丸まったところ」で終わったなら、
+次のプロンプトは「丸まった猫」から始める。</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>5. 最初と最後のフレームを使う考え方</h2>
+      <p>最初の画像と最後の画像を用意できる場合は、AIに「この2枚の間の動きだけを作って」と頼む考え方があります。</p>
+      <div class="prompt-box">
+        <pre>[Image1]は最初のフレーム。
+[Image2]は最後のフレーム。
+同じ猫の丸いシルエットと画面中央の位置を維持する。
+猫がゆっくり沈み込み、柔らかいクッションの形へ連続的に変化する。
+カメラは固定。光は柔らかい朝の窓光。
+余計な文字、透かし、別の動物を追加しない。</pre>
+      </div>
+      <p>変身動画では、最初と最後で残すものを決めると安定しやすいです。たとえば「丸いシルエット」「目線の位置」「同じ光」などです。</p>
+    </section>
+
+    <section class="section" id="template">
+      <h2>6. まず使うプロンプト型</h2>
+      <p>最初はこの型だけ覚えれば十分です。</p>
+      <div class="prompt-box">
+        <pre>目的：
+[何を見せたいか]
+
+被写体：
+[人物・猫・商品など]
+
+動き：
+[1つの動きだけ]
+
+カメラ：
+[固定 / ゆっくりドリーイン / 横移動 など]
+
+光：
+[柔らかい窓光 / 逆光 / 冷たい月明かり など]
+
+音：
+[静かな環境音 / 音楽なし / 小さな効果音 など]
+
+変えてはいけないもの：
+[顔、形、色、ロゴ、服装、背景など]
+
+入れないもの：
+字幕、透かし、余計な文字、別キャラクター</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>7. あなた向けの例</h2>
+      <p>猫の5秒変身動画なら、こういう考え方が合います。</p>
+      <div class="prompt-box">
+        <pre>[Image1]の猫を参照し、顔の丸さ、毛色、目の雰囲気を維持する。
+猫はベッドの上で丸くなり、体の輪郭がゆっくり柔らかいクッションへ変化する。
+変化は小さく、かわいく、怖い要素は入れない。
+カメラは固定の中景。柔らかい朝の窓光。
+音は静かな部屋の環境音だけ。
+字幕、透かし、余計な文字、別の動物を追加しない。</pre>
+      </div>
+      <p>台湾神話 × バイオメカニカルなら、最初から詰め込みすぎず、1クリップごとに「仮面が開く」「金属の羽が少し動く」のように分けるのが安全です。</p>
+    </section>
+
+    <section class="section danger">
+      <h2>8. 権利まわりの注意</h2>
+      <p>資料では、有名キャラクター、実在人物、ブランド、曲、声などをそのまま使うのは避ける考え方になっています。</p>
+      <p>使いたい雰囲気がある場合は、名前を隠して真似するのではなく、オリジナルの人物・世界観・衣装・光・カメラに置き換えます。</p>
+    </section>
+
+    <section class="section" id="workflow">
+      <h2>9. 実際に使う流れ</h2>
+      <ol>
+        <li>作りたい動画を一言で書く</li>
+        <li>5秒で見せる動きを1つだけ決める</li>
+        <li>参照画像や動画があるなら役割を決める</li>
+        <li>Codexにプロンプトを作ってもらう</li>
+        <li>Seedance 2.0に貼って生成する</li>
+        <li>できた動画の最後を見て、次のクリップを作る</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>参考にした資料</h2>
+      <ul class="source-list">
+        <li><a href="https://github.com/Emily2040/seedance-2.0" target="_blank" rel="noreferrer">Emily2040/seedance-2.0</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/docs/README.ja.md" target="_blank" rel="noreferrer">日本語ガイド</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/skills/seedance-vocab-ja/SKILL.md" target="_blank" rel="noreferrer">日本語語彙ガイド</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/skills/seedance-examples-ja/SKILL.md" target="_blank" rel="noreferrer">日本語作例</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/skills/seedance-sequence/SKILL.md" target="_blank" rel="noreferrer">連続クリップ</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/skills/seedance-continuation/SKILL.md" target="_blank" rel="noreferrer">続き動画</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/references/reference-workflow.md" target="_blank" rel="noreferrer">参照素材の使い方</a></li>
+        <li><a href="https://github.com/Emily2040/seedance-2.0/blob/main/references/first-last-frame-guide.md" target="_blank" rel="noreferrer">最初/最後フレームの考え方</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

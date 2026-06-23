@@ -53,6 +53,27 @@
       font-size: 14px;
     }
 
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .top-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
     .panel,
     .log-card {
       background: var(--surface);
@@ -525,6 +546,9 @@
     <header>
       <h1>学習ログ</h1>
       <p class="lead">簿記・中国語繁体字・英語の記録をこのブラウザに保存します。</p>
+      <div class="top-links">
+        <a href="./seedance-guide.html">Seedance資料まとめ</a>
+      </div>
     </header>
 
     <section class="panel" aria-label="学習ログ入力">
