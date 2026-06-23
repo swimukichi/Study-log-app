@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seedance 2.0 Reviewable Workbench</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f6f2;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #626973;
+      --line: #dde1d8;
+      --green: #256f5c;
+      --green-dark: #1d5849;
+      --orange: #9c5a1c;
+      --blue: #285f8f;
+      --red: #a33b3b;
+      --soft-green: #eef7f1;
+      --soft-orange: #fff8ed;
+      --shadow: 0 10px 26px rgba(28, 34, 31, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    .app {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 18px 14px 44px;
+    }
+
+    header {
+      padding: 10px 2px 16px;
+    }
+
+    .back-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .back-links a {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .hero,
+    .panel,
+    .card,
+    .output {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 16px;
+      margin-bottom: 14px;
+      border-color: #ead8bf;
+      background: var(--soft-orange);
+    }
+
+    .hero p {
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 16px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .card strong {
+      color: var(--green);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #edf4df;
+      color: #3b5f19;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag.orange {
+      background: #fff0db;
+      color: var(--orange);
+    }
+
+    .tag.blue {
+      background: #e8f1f8;
+      color: var(--blue);
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      padding: 11px 12px;
+    }
+
+    textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 10px;
+    }
+
+    .checks {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcf8;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .check input {
+      width: 18px;
+      height: 18px;
+      margin: 2px 0 0;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      min-height: 46px;
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .primary:active {
+      background: var(--green-dark);
+    }
+
+    .secondary {
+      background: #e7ebe4;
+      color: var(--text);
+    }
+
+    .output {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcf8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 420px);
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #202124;
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 760px) {
+      .layout,
+      .row,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="back-links">
+        <a href="./index.html">← 学習ログ</a>
+        <a href="./seedance-guide.html">Seedance資料まとめ</a>
+      </div>
+      <h1>Seedance 2.0 Reviewable Workbench</h1>
+      <p class="lead">Emilyさんの資料をもとに、動画プロンプトを作る前に内容を確認できる作業台です。</p>
+    </header>
+
+    <section class="hero">
+      <p>使い方：左で資料の要点を確認し、右に作りたい動画を入力します。最後にチェック項目を確認して、生成されたプロンプトをコピーします。</p>
+    </section>
+
+    <div class="layout">
+      <section class="panel" aria-label="資料の要点">
+        <h2>資料の要点</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>1. 1クリップは1つの動きに絞る</h3>
+            <p class="small">「猫が歩く、光る、変身する、部屋が変わる」を一度に入れると崩れやすいです。まずは1つの変化だけにします。</p>
+            <div class="tags">
+              <span class="tag">5秒</span>
+              <span class="tag">1アクション</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>2. 参照素材は役割を決める</h3>
+            <p class="small">画像は見た目、動画は動き、音声はテンポのように、素材ごとの役割を分けると安定します。</p>
+            <div class="tags">
+              <span class="tag blue">[Image1]</span>
+              <span class="tag blue">[Video1]</span>
+              <span class="tag blue">[Audio1]</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>3. 変えてはいけないものを書く</h3>
+            <p class="small">顔、毛色、服装、ロゴ、背景、カメラ位置など、守りたいものを明示します。</p>
+            <div class="tags">
+              <span class="tag orange">維持する</span>
+              <span class="tag orange">追加しない</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>4. 長い動画は分けて作る</h3>
+            <p class="small">Clip 01を作り、その最後の状態を見てからClip 02を書くと、つながりが自然になります。</p>
+            <div class="tags">
+              <span class="tag">Clip 01</span>
+              <span class="tag">Clip 02</span>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 18px;">レビュー項目</h2>
+        <div class="checks" id="reviewChecks">
+          <label class="check"><input type="checkbox">5秒で見せる動きが1つに絞れている</label>
+          <label class="check"><input type="checkbox">カメラの動き、または固定が書かれている</label>
+          <label class="check"><input type="checkbox">光の方向や雰囲気が書かれている</label>
+          <label class="check"><input type="checkbox">参照素材の役割が分かれている</label>
+          <label class="check"><input type="checkbox">変えてはいけないものが書かれている</label>
+          <label class="check"><input type="checkbox">字幕、透かし、余計な文字を入れない指定がある</label>
+          <label class="check"><input type="checkbox">有名キャラ、実在人物、ブランドをそのまま使っていない</label>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="プロンプト作成欄">
+        <h2>プロンプト作成欄</h2>
+        <div class="form">
+          <div class="row">
+            <label>
+              動画タイプ
+              <select id="videoType">
+                <option value="猫の5秒変身動画">猫の5秒変身動画</option>
+                <option value="台湾神話 × バイオメカニカル">台湾神話 × バイオメカニカル</option>
+                <option value="語学学習用の短い場面">語学学習用の短い場面</option>
+                <option value="自由入力">自由入力</option>
+              </select>
+            </label>
+            <label>
+              秒数
+              <input id="duration" type="number" min="3" max="12" value="5">
+            </label>
+          </div>
+
+          <label>
+            目的
+            <textarea id="goal">かわいい猫が日用品に変化する、短くて見やすい動画を作る。</textarea>
+          </label>
+
+          <label>
+            被写体
+            <textarea id="subject">丸い顔の猫。柔らかい毛並み。怖い要素は入れない。</textarea>
+          </label>
+
+          <label>
+            画面内の動き
+            <textarea id="movement">猫がベッドの上で丸くなり、輪郭がゆっくりクッションの形へ変化する。</textarea>
+          </label>
+
+          <label>
+            カメラ
+            <textarea id="camera">固定カメラ。中景。猫の全体が見える距離。</textarea>
+          </label>
+
+          <label>
+            光・色
+            <textarea id="lighting">柔らかい朝の窓光。自然な色。落ち着いた室内。</textarea>
+          </label>
+
+          <label>
+            音
+            <textarea id="sound">静かな部屋の環境音だけ。音楽は入れない。</textarea>
+          </label>
+
+          <label>
+            参照素材の役割
+            <textarea id="references">[Image1]は猫の見た目を固定するために使う。毛色、顔の丸さ、目の雰囲気を維持する。</textarea>
+          </label>
+
+          <label>
+            変えてはいけないもの
+            <textarea id="keep">猫の毛色、丸いシルエット、画面中央の位置、柔らかい雰囲気を維持する。</textarea>
+          </label>
+
+          <label>
+            入れないもの
+            <textarea id="avoid">字幕、透かし、余計な文字、別の動物、怖い変形、機械的すぎる部品を追加しない。</textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="button" id="buildPrompt">プロンプト作成</button>
+          <button class="secondary" type="button" id="resetSample">猫サンプルに戻す</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="output" aria-label="生成されたプロンプト">
+      <h2>生成されたプロンプト</h2>
+      <p class="small" id="reviewStatus">レビュー項目を確認すると、足りない部分に気づきやすくなります。</p>
+      <pre id="promptOutput"></pre>
+      <div class="actions">
+        <button class="primary" type="button" id="copyPrompt">コピー</button>
+        <button class="secondary" type="button" id="copyReview">レビュー結果もコピー</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const fields = [
+      "videoType",
+      "duration",
+      "goal",
+      "subject",
+      "movement",
+      "camera",
+      "lighting",
+      "sound",
+      "references",
+      "keep",
+      "avoid"
+    ];
+    const promptOutput = document.querySelector("#promptOutput");
+    const reviewStatus = document.querySelector("#reviewStatus");
+    const toast = document.querySelector("#toast");
+
+    function value(id) {
+      return document.querySelector(`#${id}`).value.trim();
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function buildPrompt() {
+      const prompt = [
+        `Seedance 2.0用プロンプト`,
+        ``,
+        `目的：${value("goal")}`,
+        `動画タイプ：${value("videoType")}`,
+        `長さ：${value("duration")}秒`,
+        ``,
+        `被写体：`,
+        value("subject"),
+        ``,
+        `画面内の動き：`,
+        value("movement"),
+        ``,
+        `カメラ：`,
+        value("camera"),
+        ``,
+        `光・色：`,
+        value("lighting"),
+        ``,
+        `音：`,
+        value("sound"),
+        ``,
+        `参照素材の役割：`,
+        value("references"),
+        ``,
+        `変えてはいけないもの：`,
+        value("keep"),
+        ``,
+        `入れないもの：`,
+        value("avoid"),
+        ``,
+        `補足：1クリップ内では動きを1つに絞る。生成結果の最後の状態を確認してから、次のクリップを作る。`
+      ].join("\n");
+
+      promptOutput.textContent = prompt;
+      updateReviewStatus();
+    }
+
+    function updateReviewStatus() {
+      const checks = Array.from(document.querySelectorAll("#reviewChecks input"));
+      const done = checks.filter((check) => check.checked).length;
+      reviewStatus.textContent = `レビュー確認：${done}/${checks.length} 項目チェック済み`;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("コピーしました");
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        showToast("コピーしました");
+      }
+    }
+
+    function copyReviewResult() {
+      const checks = Array.from(document.querySelectorAll(".check")).map((label) => {
+        const checked = label.querySelector("input").checked ? "[x]" : "[ ]";
+        return `${checked} ${label.textContent.trim()}`;
+      });
+      copyText([promptOutput.textContent, "", "レビュー項目：", ...checks].join("\n"));
+    }
+
+    function resetSample() {
+      document.querySelector("#videoType").value = "猫の5秒変身動画";
+      document.querySelector("#duration").value = "5";
+      document.querySelector("#goal").value = "かわいい猫が日用品に変化する、短くて見やすい動画を作る。";
+      document.querySelector("#subject").value = "丸い顔の猫。柔らかい毛並み。怖い要素は入れない。";
+      document.querySelector("#movement").value = "猫がベッドの上で丸くなり、輪郭がゆっくりクッションの形へ変化する。";
+      document.querySelector("#camera").value = "固定カメラ。中景。猫の全体が見える距離。";
+      document.querySelector("#lighting").value = "柔らかい朝の窓光。自然な色。落ち着いた室内。";
+      document.querySelector("#sound").value = "静かな部屋の環境音だけ。音楽は入れない。";
+      document.querySelector("#references").value = "[Image1]は猫の見た目を固定するために使う。毛色、顔の丸さ、目の雰囲気を維持する。";
+      document.querySelector("#keep").value = "猫の毛色、丸いシルエット、画面中央の位置、柔らかい雰囲気を維持する。";
+      document.querySelector("#avoid").value = "字幕、透かし、余計な文字、別の動物、怖い変形、機械的すぎる部品を追加しない。";
+      buildPrompt();
+    }
+
+    document.querySelector("#buildPrompt").addEventListener("click", buildPrompt);
+    document.querySelector("#copyPrompt").addEventListener("click", () => copyText(promptOutput.textContent));
+    document.querySelector("#copyReview").addEventListener("click", copyReviewResult);
+    document.querySelector("#resetSample").addEventListener("click", resetSample);
+    document.querySelector("#reviewChecks").addEventListener("change", updateReviewStatus);
+    fields.forEach((id) => document.querySelector(`#${id}`).addEventListener("input", buildPrompt));
+
+    buildPrompt();
+  </script>
+</body>
+</html>

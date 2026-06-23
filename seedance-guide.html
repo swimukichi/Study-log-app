@@ -45,9 +45,15 @@
       padding: 12px 2px 18px;
     }
 
-    .back-link {
-      display: inline-flex;
+    .back-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 16px;
+    }
+
+    .back-links a {
+      display: inline-flex;
       color: var(--muted);
       font-size: 14px;
       text-decoration: none;
@@ -240,7 +246,10 @@
 <body>
   <main class="app">
     <header>
-      <a class="back-link" href="./index.html">← 学習ログに戻る</a>
+      <div class="back-links">
+        <a href="./index.html">← 学習ログに戻る</a>
+        <a href="./seedance-workbench.html">Seedance作業台</a>
+      </div>
       <h1>Seedance 2.0 資料まとめ</h1>
       <p class="lead">EmilyさんのGitHub資料を、動画生成の初心者でも使いやすいように整理したページです。</p>
     </header>
